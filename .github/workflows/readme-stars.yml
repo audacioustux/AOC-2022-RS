@@ -2,8 +2,11 @@ name: Update readme ⭐️ progress
 
 on:
     # !Please set a different minute than 51 if you enable this!
-    schedule:
-        - cron: "30 */6 * * *" # Every 6 hours
+    # schedule:
+    #     - cron: "51 */6 * * *" # Every 6 hours
+    push:
+      branches:
+        - main
     workflow_dispatch:
 
 jobs:
