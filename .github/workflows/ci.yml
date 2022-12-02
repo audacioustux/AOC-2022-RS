@@ -38,3 +38,14 @@ jobs:
                   components: clippy
             - name: cargo clippy
               run: cargo clippy -- -D warnings
+    rustfmt:
+        runs-on: ubuntu-latest
+        name: Format (rustfmt)
+        steps:
+            - uses: actions/checkout@v3
+            - uses: dtolnay/rust-toolchain@master
+              with:
+                  toolchain: ${{env.RUSTUP_TOOLCHAIN}}
+                  components: rustfmt
+            - name: cargo fmt
+              run: cargo fmt
