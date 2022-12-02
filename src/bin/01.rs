@@ -1,3 +1,5 @@
+#![feature(binary_heap_into_iter_sorted)]
+
 pub fn part_one(input: &str) -> Option<u32> {
     let mut sum = 0;
     let mut best_sum = 0;
@@ -35,7 +37,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     }
     heap.push(sum);
 
-    let total_sum = heap.iter().take(3).sum();
+    let total_sum = heap.into_iter_sorted().take(3).sum();
 
     Some(total_sum)
 }
@@ -53,12 +55,12 @@ mod tests {
     #[test]
     fn test_part_one() {
         let input = advent_of_code::read_file("examples", 1);
-        assert_eq!(part_one(&input), None);
+        assert_eq!(part_one(&input), Some(24000));
     }
 
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 1);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(45000));
     }
 }
