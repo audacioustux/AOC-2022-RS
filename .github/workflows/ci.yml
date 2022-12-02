@@ -49,3 +49,4 @@ jobs:
                   components: rustfmt
             - name: cargo fmt
               run: cargo fmt
+

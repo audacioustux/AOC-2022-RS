@@ -9,3 +9,7 @@ publish = false
 
 [dependencies]
 pico-args = "0.5.0"
+
+# solution dependencies
+itertools = "0.10.5"
+
