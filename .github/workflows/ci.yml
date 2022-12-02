@@ -3,6 +3,7 @@ name: Continuous Integration
 on: push
 
 env:
+    RUSTUP_TOOLCHAIN: nightly-2022-12-01
     CARGO_TERM_COLOR: always
 
 jobs:
@@ -10,37 +11,30 @@ jobs:
         runs-on: ubuntu-latest
         name: Check
         steps:
-            - uses: actions/checkout@v2
-            - name: Install latest nightly
-              uses: actions-rs/toolchain@v1
+            - uses: actions/checkout@v3
+            - uses: dtolnay/rust-toolchain
               with:
-                  toolchain: nightly
-                  override: true
+                  toolchain: ${{env.RUSTUP_TOOLCHAIN}}
             - name: cargo check
               run: cargo check
     test:
         runs-on: ubuntu-latest
         name: Test
         steps:
-            - uses: actions/checkout@v2
-            - name: Install latest nightly
-              uses: actions-rs/toolchain@v1
+            - uses: actions/checkout@v3
+            - uses: dtolnay/rust-toolchain
               with:
-                  toolchain: nightly
-                  override: true
+                  toolchain: ${{env.RUSTUP_TOOLCHAIN}}
             - name: cargo test
               run: cargo test
-    # uncomment to enable clippy lints
     clippy:
         runs-on: ubuntu-latest
         name: Lint (clippy)
         steps:
-            - uses: actions/checkout@v2
-            - name: Install latest nightly
-              uses: actions-rs/toolchain@v1
+            - uses: actions/checkout@v3
+            - uses: dtolnay/rust-toolchain
               with:
-                  toolchain: nightly
-                  override: true
+                  toolchain: ${{env.RUSTUP_TOOLCHAIN}}
                   components: clippy
             - name: cargo clippy
               run: cargo clippy -- -D warnings
