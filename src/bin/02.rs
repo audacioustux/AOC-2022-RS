@@ -20,7 +20,7 @@ impl Shape {
         use Shape::*;
 
         match (opponent, outcome) {
-            (shape @ _, Draw) => *shape,
+            (shape, Draw) => *shape,
             (Rock, Win) => Paper,
             (Rock, Loss) => Scissor,
             (Paper, Win) => Scissor,
