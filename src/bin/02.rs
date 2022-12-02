@@ -1,6 +1,7 @@
 use itertools::Itertools;
 use std::str::FromStr;
 
+#[derive(Clone, Copy)]
 enum Shape {
     Rock,
     Paper,
@@ -19,14 +20,12 @@ impl Shape {
         use Shape::*;
 
         match (opponent, outcome) {
+            (op @ _, Draw) => op.to_owned(),
             (Rock, Win) => Paper,
-            (Rock, Draw) => Rock,
             (Rock, Loss) => Scissor,
             (Paper, Win) => Scissor,
-            (Paper, Draw) => Paper,
             (Paper, Loss) => Rock,
             (Scissor, Win) => Rock,
-            (Scissor, Draw) => Scissor,
             (Scissor, Loss) => Paper,
         }
     }
@@ -74,6 +73,7 @@ impl Outcome {
         use Shape::*;
 
         match (opponent, player) {
+            (a @ _, a @ _) => Self::Draw,
             (Rock, Rock) => Self::Draw,
             (Rock, Paper) => Self::Win,
             (Rock, Scissor) => Self::Loss,
