@@ -1,45 +1,44 @@
+use std::ops::RangeInclusive;
+
 use itertools::Itertools;
 
+fn get_assignments(
+    input: &str,
+) -> impl Iterator<Item = (RangeInclusive<u32>, RangeInclusive<u32>)> + '_ {
+    input.lines().map(|pair| pair.splitn(2, ',')).map(|ranges| {
+        ranges
+            .flat_map(|range| {
+                range
+                    .split('-')
+                    .map(|n| n.parse().unwrap())
+                    .tuples()
+                    .map(|(start, end)| start..=end)
+            })
+            .collect_tuple()
+            .unwrap()
+    })
+}
+
 pub fn part_one(input: &str) -> Option<u32> {
-    let overlaps_count: u32 = input
-        .lines()
-        .map(|line| line.split_once(',').unwrap())
-        .flat_map(|(first, second)| first.split('-').chain(second.split('-')))
-        .map(|range| range.parse::<u32>().unwrap())
-        .tuples()
-        .filter(|(first_start, first_end, second_start, second_end)| {
-            let first_range = *first_start..=*first_end;
-            let second_range = *second_start..=*second_end;
-            (first_range.contains(second_start)
-                && first_range.contains(second_end))
-                || (second_range.contains(first_start)
-                    && second_range.contains(first_end))
+    get_assignments(input)
+        .filter(|(first, second)| {
+            (first.contains(second.start()) && first.contains(second.end()))
+                || (second.contains(first.start())
+                    && second.contains(first.end()))
         })
         .count()
         .try_into()
-        .unwrap();
-
-    Some(overlaps_count)
+        .ok()
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let overlaps_count: u32 = input
-        .lines()
-        .map(|line| line.split_once(',').unwrap())
-        .flat_map(|(first, second)| first.split('-').chain(second.split('-')))
-        .map(|range| range.parse::<u32>().unwrap())
-        .tuples()
-        .filter(|(first_start, first_end, second_start, second_end)| {
-            let first_range = *first_start..=*first_end;
-            let second_range = *second_start..=*second_end;
-            first_range.contains(second_start)
-                || second_range.contains(first_start)
+    get_assignments(input)
+        .filter(|(first, second)| {
+            first.contains(second.start()) || second.contains(first.start())
         })
         .count()
         .try_into()
-        .unwrap();
-
-    Some(overlaps_count)
+        .ok()
 }
 
 fn main() {
