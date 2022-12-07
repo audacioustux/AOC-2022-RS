@@ -13,8 +13,8 @@ fn parse<'a>(input: &mut impl Iterator<Item = &'a str>) -> Vec<u32> {
                 subdirs.extend(parse(input));
                 total += subdirs.last().unwrap();
             }
-            Some([size, _]) => {
-                total += size.parse::<u32>().unwrap();
+            Some([s, _]) if !["$", "dir"].contains(s) => {
+                total += s.parse::<u32>().unwrap();
             }
             _ => (),
         }
