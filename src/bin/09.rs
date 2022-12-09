@@ -33,6 +33,38 @@ impl From<&str> for Motion {
     }
 }
 
+#[allow(dead_code)]
+fn animate_rope(cells: &[(i32, i32)]) {
+    let head = cells.first().unwrap();
+    let tails = cells.iter().skip(1);
+
+    // clear screen
+    print!("{}[2J", 27 as char);
+
+    // create a grid(20x40) to draw the rope
+    let mut grid = vec![vec!['.'; 40]; 20];
+
+    // draw head(H) and tails(T) on the grid
+    // (0, 0) is the top-left of the grid
+    // if rope goes out of the grid, it will be drawn on the opposite side
+    // using modulo operator
+    tails.for_each(|tail| {
+        grid[(tail.1 % 20 + 20) as usize % 20]
+            [(tail.0 % 40 + 40) as usize % 40] = 'T';
+    });
+    grid[(head.1 % 20 + 20) as usize % 20][(head.0 % 40 + 40) as usize % 40] =
+        'H';
+
+    // draw the grid
+    grid.iter().for_each(|row| {
+        row.iter().for_each(|cell| print!("{}", cell));
+        println!();
+    });
+
+    // wait for 50ms
+    std::thread::sleep(std::time::Duration::from_millis(50));
+}
+
 fn simulate_motions(
     motions: impl Iterator<Item = Motion>,
     rope_length: usize,
@@ -63,6 +95,8 @@ fn simulate_motions(
                 });
 
                 acc.insert(tails.last().cloned().unwrap());
+
+                // animate_rope(&tails);
             });
 
             acc
