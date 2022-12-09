@@ -5,10 +5,9 @@ use itertools::Itertools;
 fn parse_stacks(input: &str) -> HashMap<usize, Vec<char>> {
     let levels = input.lines().rev();
 
-    levels
-        .skip(1)
-        .map(|level| level.chars().skip(1).step_by(4))
-        .fold(HashMap::new(), |mut stacks, crates| {
+    levels.skip(1).map(|level| level.chars().skip(1).step_by(4)).fold(
+        HashMap::new(),
+        |mut stacks, crates| {
             crates
                 .enumerate()
                 .filter(|(_, c)| c.is_ascii_alphabetic())
@@ -17,7 +16,8 @@ fn parse_stacks(input: &str) -> HashMap<usize, Vec<char>> {
                 });
 
             stacks
-        })
+        },
+    )
 }
 
 struct Move {
@@ -58,9 +58,7 @@ fn move_crates(
         stacks.entry(to).and_modify(|stack| stack.extend(crates));
     });
 
-    (1..=stacks.len())
-        .map(|i| stacks.get(&i).unwrap().last().unwrap())
-        .join("")
+    (1..=stacks.len()).map(|i| stacks.get(&i).unwrap().last().unwrap()).join("")
 }
 
 pub fn part_one(input: &str) -> Option<String> {

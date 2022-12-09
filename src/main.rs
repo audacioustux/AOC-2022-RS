@@ -26,11 +26,7 @@ fn main() {
 
             println!(
                 "{}",
-                if is_empty {
-                    "Not solved."
-                } else {
-                    output.trim()
-                }
+                if is_empty { "Not solved." } else { output.trim() }
             );
 
             if is_empty {
