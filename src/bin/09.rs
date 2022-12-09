@@ -33,11 +33,13 @@ impl From<&str> for Motion {
     }
 }
 
-fn simulate_motions(motions: &[Motion], rope_length: usize) -> usize {
+fn simulate_motions(
+    motions: impl Iterator<Item = Motion>,
+    rope_length: usize,
+) -> usize {
     let mut tails = vec![(0_i32, 0_i32); rope_length + 1];
 
     motions
-        .iter()
         .fold(HashSet::new(), |mut acc, motion| {
             (0..motion.step_count).for_each(|_| {
                 let mut head = tails.first_mut().unwrap();
@@ -69,13 +71,13 @@ fn simulate_motions(motions: &[Motion], rope_length: usize) -> usize {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let input = input.lines().map_into::<Motion>().collect_vec();
-    simulate_motions(&input, 1).try_into().ok()
+    let input = input.lines().map_into::<Motion>();
+    simulate_motions(input, 1).try_into().ok()
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let input = input.lines().map_into::<Motion>().collect_vec();
-    simulate_motions(&input, 9).try_into().ok()
+    let input = input.lines().map_into::<Motion>();
+    simulate_motions(input, 9).try_into().ok()
 }
 
 fn main() {
