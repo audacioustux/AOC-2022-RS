@@ -1,10 +1,10 @@
 use itertools::Itertools;
 
-enum Instructuion {
+enum Instruction {
     Noop,
     Addx(i32),
 }
-impl From<&str> for Instructuion {
+impl From<&str> for Instruction {
     fn from(value: &str) -> Self {
         match value {
             "noop" => Self::Noop,
@@ -16,41 +16,53 @@ impl From<&str> for Instructuion {
     }
 }
 
-pub fn part_one(input: &str) -> Option<u32> {
+pub fn part_one(input: &str) -> Option<i32> {
     input
         .lines()
-        .map_into::<Instructuion>()
-        .fold(((1, 1), 0), |state, instruction| {
-            let ((mut cycle, mut x), mut sum) = state;
-
-            match instruction {
-                Instructuion::Noop => {
-                    cycle += 1;
-
-                    if (20..=240).step_by(40).contains(&cycle) {
-                        sum += x * cycle;
-                    }
-                }
-                Instructuion::Addx(val) => {
-                    (0..2).for_each(|c| {
-                        cycle += 1;
-
-                        if c == 1 {
-                            x += val;
-                        };
-
-                        if (20..=240).step_by(40).contains(&cycle) {
-                            sum += x * cycle;
-                        }
-                    });
-                }
+        .map_into::<Instruction>()
+        .scan(1, |x, instruction| match instruction {
+            Instruction::Noop => {
+                *x += 1;
+                Some(vec![*x])
             }
-
-            ((cycle, x), sum)
+            Instruction::Addx(val) => {
+                *x += val;
+                Some(vec![*x, *x])
+            }
         })
-        .1
-        .try_into()
-        .ok()
+        .flatten()
+        .enumerate()
+        .skip(19)
+        .step_by(40)
+        .map(|(cycle, x)| x * (cycle + 1) as i32)
+        .sum1()
+}
+
+pub fn part_two(input: &str) {
+    use pathfinding::prelude::Grid;
+
+    let grid = input
+        .lines()
+        .map_into::<Instruction>()
+        .scan(1, |x, instruction| match instruction {
+            Instruction::Noop => {
+                *x += 1;
+                Some(vec![*x])
+            }
+            Instruction::Addx(val) => {
+                *x += val;
+                Some(vec![*x, *x])
+            }
+        })
+        .flatten()
+        .enumerate()
+        .flat_map(|(cycle, x)| {
+            (x.abs_diff(cycle as i32 % 40) <= 1)
+                .then_some((cycle % 40, cycle / 40))
+        })
+        .collect::<Grid>();
+
+    format!("{grid:#?}");
 }
 
 fn main() {
