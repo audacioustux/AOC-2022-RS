@@ -1,36 +1,24 @@
 use itertools::Itertools;
 
-enum Instruction {
-    Noop,
-    Addx(i32),
-}
-impl From<&str> for Instruction {
-    fn from(value: &str) -> Self {
-        match value {
-            "noop" => Self::Noop,
-            _ => match value.split_once(' ').unwrap() {
-                ("addx", val) => Self::Addx(val.parse().unwrap()),
-                _ => unreachable!(),
-            },
-        }
-    }
-}
-
-pub fn part_one(input: &str) -> Option<i32> {
+fn parse(input: &str) -> impl Iterator<Item = i32> + '_ {
     input
         .lines()
-        .map_into::<Instruction>()
         .scan(1, |x, instruction| match instruction {
-            Instruction::Noop => {
-                *x += 1;
-                Some(vec![*x])
-            }
-            Instruction::Addx(val) => {
-                *x += val;
-                Some(vec![*x, *x])
-            }
+            "noop" => Some(vec![*x]),
+            _ => match instruction.split_once(' ').unwrap() {
+                ("addx", val) => {
+                    let x_ = *x;
+                    *x += val.parse::<i32>().unwrap();
+
+                    Some(vec![x_, x_])
+                }
+                _ => unreachable!(),
+            },
         })
         .flatten()
+}
+pub fn part_one(input: &str) -> Option<i32> {
+    parse(input)
         .enumerate()
         .skip(19)
         .step_by(40)
@@ -38,23 +26,10 @@ pub fn part_one(input: &str) -> Option<i32> {
         .sum1()
 }
 
-pub fn part_two(input: &str) {
+pub fn part_two(input: &str) -> Option<String> {
     use pathfinding::prelude::Grid;
 
-    let grid = input
-        .lines()
-        .map_into::<Instruction>()
-        .scan(1, |x, instruction| match instruction {
-            Instruction::Noop => {
-                *x += 1;
-                Some(vec![*x])
-            }
-            Instruction::Addx(val) => {
-                *x += val;
-                Some(vec![*x, *x])
-            }
-        })
-        .flatten()
+    let grid = parse(input)
         .enumerate()
         .flat_map(|(cycle, x)| {
             (x.abs_diff(cycle as i32 % 40) <= 1)
@@ -62,13 +37,13 @@ pub fn part_two(input: &str) {
         })
         .collect::<Grid>();
 
-    format!("{grid:#?}");
+    Some(format!("{grid:#?}"))
 }
 
 fn main() {
     let input = &advent_of_code::read_file("inputs", 10);
     advent_of_code::solve!(1, part_one, input);
-    // advent_of_code::solve!(2, part_two, input);
+    advent_of_code::solve!(2, part_two, input);
 }
 
 #[cfg(test)]
