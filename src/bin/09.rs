@@ -63,10 +63,10 @@ fn simulate_motions(
     let mut tails = vec![(0_i32, 0_i32); rope_length + 1];
 
     motions
-        .fold(HashSet::new(), |mut acc, motion| {
-            (0..motion.step_count).for_each(|_| {
+        .fold(HashSet::new(), |mut acc, Motion { direction, step_count }| {
+            (0..step_count).for_each(|_| {
                 let mut head = tails.first_mut().unwrap();
-                match motion.direction {
+                match direction {
                     Direction::Left => head.0 -= 1,
                     Direction::Right => head.0 += 1,
                     Direction::Up => head.1 -= 1,
