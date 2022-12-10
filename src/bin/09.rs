@@ -1,19 +1,42 @@
 use itertools::Itertools;
 use std::collections::HashSet;
 
+#[allow(dead_code)]
+fn animate_rope(cells: &[(i32, i32)]) {
+    let head = cells.first().unwrap();
+    let tails = cells.iter().skip(1);
+
+    print!("{}[2J", 27 as char);
+
+    let mut grid = vec![vec!['.'; 40]; 20];
+    tails.for_each(|tail| {
+        grid[(tail.1 % 20 + 20) as usize % 20]
+            [(tail.0 % 40 + 40) as usize % 40] = 'T';
+    });
+    grid[(head.1 % 20 + 20) as usize % 20][(head.0 % 40 + 40) as usize % 40] =
+        'H';
+
+    grid.iter().for_each(|row| {
+        row.iter().for_each(|cell| print!("{}", cell));
+        println!();
+    });
+
+    std::thread::sleep(std::time::Duration::from_millis(50));
+}
+
 enum Direction {
-    Up,
-    Down,
     Left,
     Right,
+    Up,
+    Down,
 }
 impl From<&str> for Direction {
     fn from(value: &str) -> Self {
         match value {
-            "U" => Self::Up,
-            "D" => Self::Down,
             "L" => Self::Left,
             "R" => Self::Right,
+            "U" => Self::Up,
+            "D" => Self::Down,
             _ => unreachable!(),
         }
     }
@@ -33,38 +56,6 @@ impl From<&str> for Motion {
     }
 }
 
-#[allow(dead_code)]
-fn animate_rope(cells: &[(i32, i32)]) {
-    let head = cells.first().unwrap();
-    let tails = cells.iter().skip(1);
-
-    // clear screen
-    print!("{}[2J", 27 as char);
-
-    // create a grid(20x40) to draw the rope
-    let mut grid = vec![vec!['.'; 40]; 20];
-
-    // draw head(H) and tails(T) on the grid
-    // (0, 0) is the top-left of the grid
-    // if rope goes out of the grid, it will be drawn on the opposite side
-    // using modulo operator
-    tails.for_each(|tail| {
-        grid[(tail.1 % 20 + 20) as usize % 20]
-            [(tail.0 % 40 + 40) as usize % 40] = 'T';
-    });
-    grid[(head.1 % 20 + 20) as usize % 20][(head.0 % 40 + 40) as usize % 40] =
-        'H';
-
-    // draw the grid
-    grid.iter().for_each(|row| {
-        row.iter().for_each(|cell| print!("{}", cell));
-        println!();
-    });
-
-    // wait for 50ms
-    std::thread::sleep(std::time::Duration::from_millis(50));
-}
-
 fn simulate_motions(
     motions: impl Iterator<Item = Motion>,
     rope_length: usize,
@@ -76,22 +67,20 @@ fn simulate_motions(
             (0..motion.step_count).for_each(|_| {
                 let mut head = tails.first_mut().unwrap();
                 match motion.direction {
-                    Direction::Up => head.1 -= 1,
-                    Direction::Down => head.1 += 1,
                     Direction::Left => head.0 -= 1,
                     Direction::Right => head.0 += 1,
+                    Direction::Up => head.1 -= 1,
+                    Direction::Down => head.1 += 1,
                 }
 
-                let mut head = tails.first().cloned().unwrap();
-
-                tails.iter_mut().skip(1).for_each(|tail| {
+                tails.iter_mut().reduce(|head, tail| {
                     let (x, y) = (head.0 - tail.0, head.1 - tail.1);
 
                     if x.abs() > 1 || y.abs() > 1 {
                         *tail = (tail.0 + x.signum(), tail.1 + y.signum());
                     }
 
-                    head = *tail;
+                    tail
                 });
 
                 acc.insert(tails.last().cloned().unwrap());
