@@ -8,12 +8,9 @@ fn parse_stacks(input: &str) -> HashMap<usize, Vec<char>> {
     levels.skip(1).map(|level| level.chars().skip(1).step_by(4)).fold(
         HashMap::new(),
         |mut stacks, crates| {
-            crates
-                .enumerate()
-                .filter(|(_, c)| c.is_ascii_alphabetic())
-                .for_each(|(i, crate_id)| {
-                    stacks.entry(i + 1).or_insert_with(Vec::new).push(crate_id)
-                });
+            crates.enumerate().filter(|(_, c)| c.is_ascii_alphabetic()).for_each(
+                |(i, crate_id)| stacks.entry(i + 1).or_insert_with(Vec::new).push(crate_id),
+            );
 
             stacks
         },
@@ -27,13 +24,11 @@ struct Move {
 }
 fn parse_moves(input: &str) -> impl Iterator<Item = Move> + '_ {
     input.lines().flat_map(|line| {
-        line.split_ascii_whitespace().collect_tuple().map(
-            |(_, quantity, _, from, _, to)| Move {
-                quantity: quantity.parse().unwrap(),
-                from: from.parse().unwrap(),
-                to: to.parse().unwrap(),
-            },
-        )
+        line.split_ascii_whitespace().collect_tuple().map(|(_, quantity, _, from, _, to)| Move {
+            quantity: quantity.parse().unwrap(),
+            from: from.parse().unwrap(),
+            to: to.parse().unwrap(),
+        })
     })
 }
 

@@ -18,12 +18,7 @@ fn parse(input: &str) -> impl Iterator<Item = i32> + '_ {
         .flatten()
 }
 pub fn part_one(input: &str) -> Option<i32> {
-    parse(input)
-        .enumerate()
-        .skip(19)
-        .step_by(40)
-        .map(|(cycle, x)| x * (cycle + 1) as i32)
-        .sum1()
+    parse(input).enumerate().skip(19).step_by(40).map(|(cycle, x)| x * (cycle + 1) as i32).sum1()
 }
 
 pub fn part_two(input: &str) -> Option<String> {
@@ -32,8 +27,7 @@ pub fn part_two(input: &str) -> Option<String> {
     let grid = parse(input)
         .enumerate()
         .flat_map(|(cycle, x)| {
-            (x.abs_diff(cycle as i32 % 40) <= 1)
-                .then_some((cycle % 40, cycle / 40))
+            (x.abs_diff(cycle as i32 % 40) <= 1).then_some((cycle % 40, cycle / 40))
         })
         .collect::<Grid>();
 
@@ -56,9 +50,21 @@ mod tests {
         assert_eq!(part_one(&input), Some(13140));
     }
 
-    // #[test]
-    // fn test_part_two() {
-    //     let input = advent_of_code::read_file("examples", 10);
-    //     assert_eq!(part_two(&input), None);
-    // }
+    #[test]
+    fn test_part_two() {
+        use indoc::indoc;
+
+        let input = advent_of_code::read_file("examples", 10);
+        let output = indoc! {"
+        ▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░
+        ▓▓▓░░░▓▓▓░░░▓▓▓░░░▓▓▓░░░▓▓▓░░░▓▓▓░░░▓▓▓░
+        ▓▓▓▓░░░░▓▓▓▓░░░░▓▓▓▓░░░░▓▓▓▓░░░░▓▓▓▓░░░░
+        ▓▓▓▓▓░░░░░▓▓▓▓▓░░░░░▓▓▓▓▓░░░░░▓▓▓▓▓░░░░░
+        ▓▓▓▓▓▓░░░░░░▓▓▓▓▓▓░░░░░░▓▓▓▓▓▓░░░░░░▓▓▓▓
+        ▓▓▓▓▓▓▓░░░░░░░▓▓▓▓▓▓▓░░░░░░░▓▓▓▓▓▓▓░░░░░
+        "}
+        .trim();
+
+        assert_eq!(part_two(&input), Some(output.to_owned()));
+    }
 }

@@ -64,31 +64,25 @@ pub fn part_one(input: &str) -> Option<u32> {
             highest
         });
         // right to left
-        row[1..row.len() - 1].iter().rev().fold(
-            &row[row.len() - 1],
-            |highest, tree| {
-                if tree.height > highest.height {
-                    visible.insert((tree, FromDirection::Right));
-                    return tree;
-                }
-                highest
-            },
-        );
+        row[1..row.len() - 1].iter().rev().fold(&row[row.len() - 1], |highest, tree| {
+            if tree.height > highest.height {
+                visible.insert((tree, FromDirection::Right));
+                return tree;
+            }
+            highest
+        });
     });
 
     // by column
     (1..trees[0].len() - 1).for_each(|col| {
         // top to bottom
-        trees[1..trees.len() - 1].iter().fold(
-            &trees[0][col],
-            |highest, row| {
-                if row[col].height > highest.height {
-                    visible.insert((&row[col], FromDirection::Up));
-                    return &row[col];
-                }
-                highest
-            },
-        );
+        trees[1..trees.len() - 1].iter().fold(&trees[0][col], |highest, row| {
+            if row[col].height > highest.height {
+                visible.insert((&row[col], FromDirection::Up));
+                return &row[col];
+            }
+            highest
+        });
         // bottom to top
         trees[1..trees.len() - 1].iter().rev().fold(
             &trees[trees.len() - 1][col],
@@ -102,10 +96,9 @@ pub fn part_one(input: &str) -> Option<u32> {
         );
     });
 
-    let total_visible_trees =
-        visible.iter().unique_by(|(tree, _)| &tree.position).count()
-            + trees.len() * 2
-            + (trees[0].len() - 2) * 2;
+    let total_visible_trees = visible.iter().unique_by(|(tree, _)| &tree.position).count()
+        + trees.len() * 2
+        + (trees[0].len() - 2) * 2;
 
     Some(total_visible_trees as u32)
 }

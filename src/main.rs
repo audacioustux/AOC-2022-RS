@@ -24,10 +24,7 @@ fn main() {
             let output = String::from_utf8(cmd.stdout).unwrap();
             let is_empty = output.is_empty();
 
-            println!(
-                "{}",
-                if is_empty { "Not solved." } else { output.trim() }
-            );
+            println!("{}", if is_empty { "Not solved." } else { output.trim() });
 
             if is_empty {
                 0_f64
@@ -37,8 +34,5 @@ fn main() {
         })
         .sum();
 
-    println!(
-        "{}Total:{} {}{:.2}ms{}",
-        ANSI_BOLD, ANSI_RESET, ANSI_ITALIC, total, ANSI_RESET
-    );
+    println!("{}Total:{} {}{:.2}ms{}", ANSI_BOLD, ANSI_RESET, ANSI_ITALIC, total, ANSI_RESET);
 }

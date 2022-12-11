@@ -23,8 +23,7 @@ pub fn part_one(input: &str) -> Option<u32> {
     get_assignments(input)
         .filter(|(first, second)| {
             (first.contains(second.start()) && first.contains(second.end()))
-                || (second.contains(first.start())
-                    && second.contains(first.end()))
+                || (second.contains(first.start()) && second.contains(first.end()))
         })
         .count()
         .try_into()
@@ -33,9 +32,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 pub fn part_two(input: &str) -> Option<u32> {
     get_assignments(input)
-        .filter(|(first, second)| {
-            first.contains(second.start()) || second.contains(first.start())
-        })
+        .filter(|(first, second)| first.contains(second.start()) || second.contains(first.start()))
         .count()
         .try_into()
         .ok()

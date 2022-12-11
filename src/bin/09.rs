@@ -10,11 +10,9 @@ fn animate_rope(cells: &[(i32, i32)]) {
 
     let mut grid = vec![vec!['.'; 40]; 20];
     tails.for_each(|tail| {
-        grid[(tail.1 % 20 + 20) as usize % 20]
-            [(tail.0 % 40 + 40) as usize % 40] = 'T';
+        grid[(tail.1 % 20 + 20) as usize % 20][(tail.0 % 40 + 40) as usize % 40] = 'T';
     });
-    grid[(head.1 % 20 + 20) as usize % 20][(head.0 % 40 + 40) as usize % 40] =
-        'H';
+    grid[(head.1 % 20 + 20) as usize % 20][(head.0 % 40 + 40) as usize % 40] = 'H';
 
     grid.iter().for_each(|row| {
         row.iter().for_each(|cell| print!("{}", cell));
@@ -49,17 +47,11 @@ struct Motion {
 impl From<&str> for Motion {
     fn from(value: &str) -> Self {
         let (direction, step_count) = value.split_once(' ').unwrap();
-        Self {
-            direction: direction.into(),
-            step_count: step_count.parse().unwrap(),
-        }
+        Self { direction: direction.into(), step_count: step_count.parse().unwrap() }
     }
 }
 
-fn simulate_motions(
-    motions: impl Iterator<Item = Motion>,
-    rope_length: usize,
-) -> usize {
+fn simulate_motions(motions: impl Iterator<Item = Motion>, rope_length: usize) -> usize {
     let mut tails = vec![(0_i32, 0_i32); rope_length + 1];
 
     motions

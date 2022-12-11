@@ -34,9 +34,7 @@ pub fn part_two(input: &str) -> Option<u32> {
                 .dedup()
                 .cartesian_product(second.chars().sorted().dedup())
                 .cartesian_product(third.chars().sorted().dedup())
-                .find(|((first, second), third)| {
-                    first == second && second == third
-                })
+                .find(|((first, second), third)| first == second && second == third)
                 .map(|((item, _), _)| match item {
                     'a'..='z' => item as u32 - 'a' as u32 + 1,
                     'A'..='Z' => item as u32 - 'A' as u32 + 27,

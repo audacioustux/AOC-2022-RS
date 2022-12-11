@@ -3,11 +3,7 @@ use itertools::Itertools;
 fn parse<'a>(input: &mut impl Iterator<Item = &'a str>) -> Vec<u32> {
     let (mut total, mut subdirs) = (0, vec![]);
     loop {
-        match input
-            .next()
-            .map(|s| s.split_whitespace().collect_vec())
-            .as_deref()
-        {
+        match input.next().map(|s| s.split_whitespace().collect_vec()).as_deref() {
             Some(["$", "cd", ".."]) | None => break,
             Some(["$", "cd", dir]) if *dir != "/" => {
                 subdirs.extend(parse(input));
@@ -25,10 +21,7 @@ fn parse<'a>(input: &mut impl Iterator<Item = &'a str>) -> Vec<u32> {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let total = parse(&mut input.lines())
-        .into_iter()
-        .filter(|&size| size <= 100_000)
-        .sum();
+    let total = parse(&mut input.lines()).into_iter().filter(|&size| size <= 100_000).sum();
 
     Some(total)
 }

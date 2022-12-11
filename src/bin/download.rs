@@ -14,10 +14,7 @@ struct Args {
 
 fn parse_args() -> Result<Args, pico_args::Error> {
     let mut args = pico_args::Arguments::from_env();
-    Ok(Args {
-        day: args.free_from_str()?,
-        year: args.opt_value_from_str(["-y", "--year"])?,
-    })
+    Ok(Args { day: args.free_from_str()?, year: args.opt_value_from_str(["-y", "--year"])? })
 }
 
 fn remove_file(path: &PathBuf) {

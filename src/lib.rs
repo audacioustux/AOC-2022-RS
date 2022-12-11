@@ -19,19 +19,13 @@ macro_rules! solve {
         use std::fmt::Display;
         use std::time::Instant;
 
-        fn print_result<T: Display>(
-            func: impl FnOnce(&str) -> Option<T>,
-            input: &str,
-        ) {
+        fn print_result<T: Display>(func: impl FnOnce(&str) -> Option<T>, input: &str) {
             let timer = Instant::now();
             let result = func(input);
             let elapsed = timer.elapsed();
             match result {
                 Some(result) => {
-                    println!(
-                        "{} {}(elapsed: {:.2?}){}",
-                        result, ANSI_ITALIC, elapsed, ANSI_RESET
-                    );
+                    println!("{} {}(elapsed: {:.2?}){}", result, ANSI_ITALIC, elapsed, ANSI_RESET);
                 }
                 None => {
                     println!("not solved.")
@@ -85,12 +79,7 @@ pub fn parse_exec_time(output: &str) -> f64 {
 macro_rules! assert_approx_eq {
     ($a:expr, $b:expr) => {{
         let (a, b) = (&$a, &$b);
-        assert!(
-            (*a - *b).abs() < 1.0e-6,
-            "{} is not approximately equal to {}",
-            *a,
-            *b
-        );
+        assert!((*a - *b).abs() < 1.0e-6, "{} is not approximately equal to {}", *a, *b);
     }};
 }
 

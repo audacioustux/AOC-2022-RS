@@ -94,9 +94,7 @@ pub fn part_one(input: &str) -> Option<u32> {
                 .map(|s| s.parse::<Shape>().unwrap())
                 .collect_tuple::<(_, _)>()
         })
-        .map(|(opponent, player)| {
-            Outcome::evaluate(&opponent, &player).score() + player.value()
-        })
+        .map(|(opponent, player)| Outcome::evaluate(&opponent, &player).score() + player.value())
         .sum();
 
     Some(score)
@@ -106,14 +104,9 @@ pub fn part_two(input: &str) -> Option<u32> {
     let score = input
         .lines()
         .filter_map(|line| {
-            line.split_ascii_whitespace().collect_tuple::<(_, _)>().map(
-                |(shape, outcome)| {
-                    (
-                        shape.parse::<Shape>().unwrap(),
-                        outcome.parse::<Outcome>().unwrap(),
-                    )
-                },
-            )
+            line.split_ascii_whitespace().collect_tuple::<(_, _)>().map(|(shape, outcome)| {
+                (shape.parse::<Shape>().unwrap(), outcome.parse::<Outcome>().unwrap())
+            })
         })
         .map(|(opponent, outcome)| {
             Shape::from_outcome(&opponent, &outcome).value() + outcome.score()

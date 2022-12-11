@@ -76,9 +76,7 @@ fn main() {
         }
     };
 
-    match file
-        .write_all(MODULE_TEMPLATE.replace("DAY", &day.to_string()).as_bytes())
-    {
+    match file.write_all(MODULE_TEMPLATE.replace("DAY", &day.to_string()).as_bytes()) {
         Ok(_) => {
             println!("Created module file \"{}\"", &module_path);
         }
